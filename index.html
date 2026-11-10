@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Do Negócio Local ao Alcance Global</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #080808;
+    --surface: #141414;
+    --text: #f5f5f5;
+    --muted: #999;
+    --line: rgba(255,255,255,.12);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+}
+
+.presentation {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.slide {
+    position: absolute;
+    inset: 0;
+    padding: 65px 9% 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(55px) scale(.98);
+    transition: opacity .55s ease, transform .65s ease, visibility .55s;
+    overflow-y: auto;
+}
+
+.slide.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0) scale(1);
+    z-index: 2;
+}
+
+.slide.previous {
+    transform: translateX(-55px) scale(.98);
+}
+
+.slide::before {
+    content: "";
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,.055), transparent 70%);
+    top: -220px;
+    right: -150px;
+    pointer-events: none;
+}
+
+.slide-number {
+    position: absolute;
+    top: 35px;
+    right: 9%;
+    color: #777;
+    font-size: 12px;
+    letter-spacing: 3px;
+}
+
+.eyebrow {
+    color: #aaa;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+}
+
+h1, h2, h3 {
+    font-family: 'Manrope', sans-serif;
+}
+
+h1 {
+    font-size: clamp(42px, 7vw, 88px);
+    line-height: 1.04;
+    letter-spacing: -4px;
+    max-width: 950px;
+    font-weight: 800;
+}
+
+h2 {
+    font-size: clamp(34px, 5vw, 62px);
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+}
+
+h3 {
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+p {
+    color: #aaa;
+    line-height: 1.7;
+    font-size: 16px;
+}
+
+.subtitle {
+    max-width: 650px;
+    font-size: 19px;
+    margin-top: 28px;
+}
+
+.highlight {
+    color: #aaa;
+}
+
+.authors {
+    margin-top: 55px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.author {
+    border: 1px solid var(--line);
+    padding: 10px 17px;
+    border-radius: 30px;
+    color: #bbb;
+    font-size: 13px;
+}
+
+.divider {
+    width: 70px;
+    height: 3px;
+    background: #ddd;
+    margin: 25px 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 35px;
+}
+
+.card {
+    background: linear-gradient(145deg, #191919, #101010);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px;
+    min-height: 210px;
+    transition: .3s ease;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255,255,255,.35);
+    background: #202020;
+}
+
+.card-number {
+    color: #777;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+}
+
+.card h3 {
+    font-size: 21px;
+}
+
+.card p {
+    font-size: 14px;
+}
+
+.icon {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #444;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 22px;
+    color: #ddd;
+    font-size: 19px;
+}
+
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.info-box {
+    padding: 30px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+}
+
+.info-box h3 {
+    margin-bottom: 15px;
+}
+
+.info-box ul {
+    list-style: none;
+    margin-top: 15px;
+}
+
+.info-box li {
+    color: #aaa;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+}
+
+.info-box li:last-child {
+    border-bottom: none;
+}
+
+.metric {
+    background: #eee;
+    color: #111;
+    border-radius: 20px;
+    padding: 35px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 210px;
+}
+
+.metric strong {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(38px, 5vw, 65px);
+    letter-spacing: -3px;
+}
+
+.metric p {
+    color: #444;
+    font-size: 14px;
+}
+
+.budget-layout {
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 25px;
+    margin-top: 35px;
+}
+
+.budget-card {
+    background: #eee;
+    color: #111;
+    border-radius: 20px;
+    padding: 35px;
+}
+
+.budget-card span {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #555;
+}
+
+.budget-card h3 {
+    font-size: clamp(38px, 5vw, 65px);
+    letter-spacing: -3px;
+    margin: 20px 0 10px;
+}
+
+.budget-card p {
+    color: #555;
+}
+
+.budget-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.detail {
+    padding: 22px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 15px;
+}
+
+.detail strong {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 17px;
+}
+
+.detail p {
+    font-size: 13px;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 40px;
+}
+
+.step {
+    border-top: 1px solid #777;
+    padding-top: 20px;
+}
+
+.step span {
+    color: #777;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.step h3 {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.step p {
+    font-size: 13px;
+}
+
+.closing {
+    background: linear-gradient(135deg, #111, #080808 70%);
+}
+
+.closing h2 {
+    font-size: clamp(42px, 7vw, 82px);
+    max-width: 850px;
+}
+
+.closing .authors {
+    margin-top: 45px;
+}
+
+.footer-note {
+    position: absolute;
+    bottom: 35px;
+    left: 9%;
+    color: #666;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.controls {
+    position: fixed;
+    bottom: 28px;
+    right: 9%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 20;
+}
+
+.control-btn {
+    width: 43px;
+    height: 43px;
+    border: 1px solid #444;
+    border-radius: 50%;
+    background: #171717;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.control-btn:hover {
+    background: white;
+    color: black;
+}
+
+.page-count {
+    color: #888;
+    font-size: 12px;
+    letter-spacing: 2px;
+    min-width: 55px;
+    text-align: center;
+}
+
+.progress-track {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #222;
+    z-index: 30;
+}
+
+.progress {
+    height: 100%;
+    width: 12.5%;
+    background: #ddd;
+    transition: width .4s ease;
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .7s ease, transform .7s ease;
+}
+
+.slide.active .reveal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.slide.active .reveal:nth-child(2) {
+    transition-delay: .12s;
+}
+
+.slide.active .reveal:nth-child(3) {
+    transition-delay: .22s;
+}
+
+.slide.active .reveal:nth-child(4) {
+    transition-delay: .32s;
+}
+
+@media (max-width: 850px) {
+    .slide {
+        padding: 80px 7% 100px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .card {
+        min-height: auto;
+        padding: 20px;
+    }
+
+    .card-number {
+        margin-bottom: 12px;
+    }
+
+    .two-columns,
+    .budget-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .steps {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .slide-number {
+        right: 7%;
+    }
+
+    .footer-note {
+        left: 7%;
+    }
+
+    .controls {
+        right: 7%;
+    }
+}
+
+@media (max-width: 500px) {
+    .slide {
+        padding: 75px 6% 105px;
+    }
+
+    h1 {
+        letter-spacing: -2px;
+    }
+
+    h2 {
+        letter-spacing: -1px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    .steps {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .authors {
+        gap: 8px;
+        margin-top: 30px;
+    }
+
+    .author {
+        font-size: 11px;
+        padding: 8px 12px;
+    }
+
+    .slide-number {
+        top: 25px;
+    }
+
+    .info-box {
+        padding: 22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="presentation" id="presentation">
+
+    <!-- SLIDE 1 -->
+    <section class="slide active">
+        <span class="slide-number">01 / 08</span>
+
+        <div class="eyebrow reveal">Marketing digital • Estratégia • Crescimento</div>
+
+        <h1 class="reveal">
+            Do Negócio Local ao
+            <span class="highlight">Alcance Global.</span>
+        </h1>
+
+        <div class="divider reveal"></div>
+
+        <p class="subtitle reveal">
+            Como o marketing digital e as redes sociais transformam pequenos negócios em marcas com presença e resultados concretos.
+        </p>
+
+        <div class="authors reveal">
+            <span class="author">Lucas Samuel</span>
+            <span class="author">Enzo Calgaro</span>
+            <span class="author">Larissa Rodrigues</span>
+            <span class="author">Willian</span>
+        </div>
+
+        <div class="footer-note">APRESENTAÇÃO</div>
+    </section>
+
+    <!-- SLIDE 2 -->
+    <section class="slide">
+        <span class="slide-number">02 / 08</span>
+
+        <div class="eyebrow reveal">01 / Oportunidade digital</div>
+
+        <h2 class="reveal">O Digital é o Novo Balcão.</h2>
+
+        <p class="subtitle reveal">
+            Hoje, antes de comprar, as pessoas pesquisam, comparam e procuram referências na internet. Seu negócio precisa estar presente nesse processo.
+        </p>
+
+        <div class="grid reveal">
+            <div class="card">
+                <div class="card-number">01 / VISIBILIDADE</div>
+                <div class="icon">◉</div>
+                <h3>Seja encontrado</h3>
+                <p>Permita que novos clientes descubram sua empresa sem depender apenas da localização física.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-number">02 / CONEXÃO</div>
+                <div class="icon">↗</div>
+                <h3>Crie relacionamentos</h3>
+                <p>Converse com seu público, apresente seus produtos e construa confiança.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-number">03 / CRESCIMENTO</div>
+                <div class="icon">↗</div>
+                <h3>Amplie resultados</h3>
+                <p>Transforme presença digital em oportunidades reais de negócio.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 3 -->
+    <section class="slide">
+        <span class="slide-number">03 / 08</span>
+
+        <div class="eyebrow reveal">02 / Canais de comunicação</div>
+
+        <h2 class="reveal">Redes Sociais: Qual é a Sua?</h2>
+
+        <p class="reveal">
+            Cada plataforma possui características próprias. A escolha depende do público e do objetivo da empresa.
+        </p>
+
+        <div class="grid reveal">
+            <div class="card">
+                <div class="card-number">01 / VISUAL</div>
+                <div class="icon">◎</div>
+                <h3>Instagram</h3>
+                <p>Ideal para produtos visuais, moda, gastronomia e serviços locais. Fortalece a identidade da marca.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-number">02 / COMUNIDADE</div>
+                <div class="icon">◈</div>
+                <h3>Facebook</h3>
+                <p>Útil para comunidades locais, eventos, grupos e relacionamento com diferentes públicos.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-number">03 / ALCANCE</div>
+                <div class="icon">▷</div>
+                <h3>TikTok</h3>
+                <p>Uma oportunidade de alcançar novos públicos com vídeos criativos e conteúdo espontâneo.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 4 -->
+    <section class="slide">
+        <span class="slide-number">04 / 08</span>
+
+        <div class="eyebrow reveal">03 / Estratégia de conteúdo</div>
+
+        <h2 class="reveal">Conteúdo que Converte.</h2>
+
+        <p class="reveal">
+            Publicar por publicar não é estratégia. O conteúdo precisa despertar interesse, gerar confiança e incentivar uma ação.
+        </p>
+
+        <div class="two-columns reveal">
+            <div class="info-box">
+                <div class="icon">◉</div>
+                <h3>Mostre o processo</h3>
+                <p>Apresente os bastidores, a produção, os detalhes e o cuidado por trás do seu produto ou serviço.</p>
+                <ul>
+                    <li>Vídeos dos bastidores</li>
+                    <li>Demonstrações de produtos</li>
+                    <li>Apresentação da equipe</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <div class="icon">✦</div>
+                <h3>Construa confiança</h3>
+                <p>Mostre que outras pessoas já compraram, utilizaram e aprovaram sua solução.</p>
+                <ul>
+                    <li>Depoimentos de clientes</li>
+                    <li>Avaliações e resultados</li>
+                    <li>Ofertas e oportunidades</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5 -->
+    <section class="slide">
+        <span class="slide-number">05 / 08</span>
+
+        <div class="eyebrow reveal">04 / Investimento estratégico</div>
+
+        <h2 class="reveal">Tráfego Pago: Acelere os Resultados.</h2>
+
+        <p class="reveal">
+            Com anúncios pagos, sua empresa pode alcançar pessoas com maior potencial de interesse nos seus produtos e serviços.
+        </p>
+
+        <div class="budget-layout reveal">
+            <div class="budget-card">
+                <span>03 / ORÇAMENTO ILUSTRATIVO</span>
+                <h3>R$ 25 por dia</h3>
+                <p>Um exemplo de orçamento inicial para testar campanhas e entender o comportamento do público.</p>
+            </div>
+
+            <div class="budget-details">
+                <div class="detail">
+                    <strong>Segmentação</strong>
+                    <p>Escolha localização, idade, interesses e características do público.</p>
+                </div>
+
+                <div class="detail">
+                    <strong>Meta Ads</strong>
+                    <p>Crie campanhas para Instagram e Facebook.</p>
+                </div>
+
+                <div class="detail">
+                    <strong>Google Ads</strong>
+                    <p>Alcance pessoas que pesquisam por produtos e serviços.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 6 -->
+    <section class="slide">
+        <span class="slide-number">06 / 08</span>
+
+        <div class="eyebrow reveal">05 / Análise de desempenho</div>
+
+        <h2 class="reveal">Meça, Aprenda, Melhore.</h2>
+
+        <p class="reveal">
+            Uma estratégia digital eficiente não depende de achismos. Os dados ajudam a entender o que funciona e onde melhorar.
+        </p>
+
+        <div class="two-columns reveal">
+            <div class="metric">
+                <strong>R$ 25</strong>
+                <p>Exemplo de investimento inicial diário para testar campanhas pagas. O orçamento deve ser ajustado conforme os resultados.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>O que acompanhar?</h3>
+                <ul>
+                    <li>Alcance: quantas pessoas visualizaram o conteúdo.</li>
+                    <li>Engajamento: curtidas, comentários e compartilhamentos.</li>
+                    <li>Cliques: quantas pessoas demonstraram interesse.</li>
+                    <li>Conversões: quantas pessoas realizaram uma ação desejada.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 7 -->
+    <section class="slide">
+        <span class="slide-number">07 / 08</span>
+
+        <div class="eyebrow reveal">06 / Execução</div>
+
+        <h2 class="reveal">Plano de Ação: 4 Passos para Começar.</h2>
+
+        <p class="reveal">
+            Uma estratégia simples, organizada e consistente pode ser o ponto de partida para transformar a presença digital de uma empresa.
+        </p>
+
+        <div class="steps reveal">
+            <div class="step">
+                <span>PASSO 01</span>
+                <h3>Defina sua presença</h3>
+                <p>Escolha as plataformas que fazem sentido para o seu negócio.</p>
+            </div>
+
+            <div class="step">
+                <span>PASSO 02</span>
+                <h3>Crie conteúdo</h3>
+                <p>Publique com consistência. Uma referência inicial são três publicações por semana.</p>
+            </div>
+
+            <div class="step">
+                <span>PASSO 03</span>
+                <h3>Invista em anúncios</h3>
+                <p>Comece com R$ 25 por dia como orçamento ilustrativo e acompanhe os resultados.</p>
+            </div>
+
+            <div class="step">
+                <span>PASSO 04</span>
+                <h3>Analise e ajuste</h3>
+                <p>Observe os dados e melhore sua estratégia continuamente.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 8 -->
+    <section class="slide closing">
+        <span class="slide-number">08 / 08</span>
+
+        <div class="eyebrow reveal">Conclusão</div>
+
+        <h2 class="reveal">
+            O Seu Negócio Merece Ser <span class="highlight">Visto.</span>
+        </h2>
+
+        <div class="divider reveal"></div>
+
+        <p class="subtitle reveal">
+            O digital não é apenas uma tendência. É uma oportunidade para conectar empresas a pessoas, fortalecer marcas e construir novas possibilidades de crescimento.
+        </p>
+
+        <div class="authors reveal">
+            <span class="author">Lucas Samuel</span>
+            <span class="author">Enzo Calgaro</span>
+            <span class="author">Larissa Rodrigues</span>
+            <span class="author">Willian</span>
+        </div>
+
+        <div class="footer-note">OBRIGADO PELA ATENÇÃO</div>
+    </section>
+
+</main>
+
+<div class="controls">
+    <button class="control-btn" onclick="previousSlide()" aria-label="Slide anterior">‹</button>
+    <span class="page-count" id="pageCount">01 / 08</span>
+    <button class="control-btn" onclick="nextSlide()" aria-label="Próximo slide">›</button>
+</div>
+
+<div class="progress-track">
+    <div class="progress" id="progress"></div>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const pageCount = document.getElementById('pageCount');
+const progress = document.getElementById('progress');
+
+let currentSlide = 0;
+let touchStartX = 0;
+
+function showSlide(index) {
+    if (index < 0 || index >= slides.length) return;
+
+    slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'previous');
+
+        if (i < index) {
+            slide.classList.add('previous');
+        }
+    });
+
+    slides[index].classList.add('active');
+    currentSlide = index;
+
+    const number = String(index + 1).padStart(2, '0');
+    const total = String(slides.length).padStart(2, '0');
+
+    pageCount.textContent = `${number} / ${total}`;
+    progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+}
+
+function nextSlide() {
+    if (currentSlide < slides.length - 1) {
+        showSlide(currentSlide + 1);
+    }
+}
+
+function previousSlide() {
+    if (currentSlide > 0) {
+        showSlide(currentSlide - 1);
+    }
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowRight' || event.key === ' ') {
+        event.preventDefault();
+        nextSlide();
+    }
+
+    if (event.key === 'ArrowLeft') {
+        previousSlide();
+    }
+
+    if (event.key === 'Home') {
+        showSlide(0);
+    }
+
+    if (event.key === 'End') {
+        showSlide(slides.length - 1);
+    }
+});
+
+document.addEventListener('touchstart', (event) => {
+    touchStartX = event.changedTouches[0].screenX;
+}, { passive: true });
+
+document.addEventListener('touchend', (event) => {
+    const touchEndX = event.changedTouches[0].screenX;
+    const difference = touchStartX - touchEndX;
+
+    if (difference > 60) {
+        nextSlide();
+    }
+
+    if (difference < -60) {
+        previousSlide();
+    }
+}, { passive: true });
+
+showSlide(0);
+</script>
+
+</body>
+</html>
